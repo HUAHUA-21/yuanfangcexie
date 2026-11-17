@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>远方侧写 · 把镜头转到背面去</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%238C2F22'/%3E%3Cpath d='M18 14v36M34 14v36M46 20h-8' stroke='%23E4E3DB' stroke-width='5' fill='none'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@400;600;900&family=Noto+Sans+SC:wght@300;400;500&display=swap">
+<style>
+  :root{
+    --ink:#121917;
+    --ink-soft:#2B3330;
+    --paper:#E4E3DB;
+    --paper-deep:#D8D7CB;
+    --accent:#8C2F22;
+    --muted:#6B7066;
+    --line:#B9B8AB;
+    --serif:"Noto Serif SC","Songti SC","SimSun",serif;
+    --sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+    --pad:clamp(20px,5vw,88px);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--sans);font-weight:300;font-size:16.5px;line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  img{display:block;max-width:100%;}
+  a{color:inherit;text-decoration:none;}
+  h1,h2,h3,p,ul{margin:0;}
+
+  /* ===== 顶部 ===== */
+  .top{
+    position:sticky;top:0;z-index:20;
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+    padding:14px var(--pad);
+    background:rgba(228,227,219,.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .seal{
+    display:grid;place-items:center;
+    width:26px;height:26px;background:var(--accent);color:var(--paper);
+    font-family:var(--serif);font-weight:600;font-size:15px;line-height:1;
+    letter-spacing:0;
+  }
+  .brand-name{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.04em;}
+  .top nav{
+    display:flex;flex-wrap:wrap;min-width:0;justify-content:flex-end;
+    gap:clamp(12px,2.2vw,32px);font-size:13.5px;color:var(--ink-soft);
+  }
+  .top nav a{padding:4px 0;border-bottom:1px solid transparent;transition:border-color .25s,color .25s;}
+  .top nav a:hover,.top nav a:focus-visible{border-bottom-color:var(--accent);color:var(--accent);}
+
+  /* ===== Hero ===== */
+  .hero{
+    display:grid;grid-template-columns:minmax(0,44fr) minmax(0,56fr);
+    min-height:min(80vh,760px);
+    border-bottom:1px solid var(--line);
+  }
+  .hero-copy{
+    min-width:0;
+    padding:clamp(40px,7vw,96px) clamp(24px,4vw,64px) clamp(28px,4vw,56px) var(--pad);
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  .hero-copy h1{
+    font-family:var(--serif);font-weight:900;font-size:clamp(58px,9.4vw,128px);
+    line-height:.96;letter-spacing:.02em;
+    animation:rise .9s cubic-bezier(.16,.84,.32,1) both;
+  }
+  .hero-lead{
+    margin-top:clamp(20px,3vw,34px);
+    font-family:var(--serif);font-weight:400;font-size:clamp(19px,2.1vw,26px);
+    line-height:1.7;color:var(--ink);
+    animation:rise 1s .18s cubic-bezier(.16,.84,.32,1) both;
+  }
+  .hero-sub{
+    margin-top:18px;max-width:32em;color:var(--muted);font-size:15px;line-height:1.9;
+    text-wrap:pretty;
+    animation:rise 1s .3s cubic-bezier(.16,.84,.32,1) both;
+  }
+  .nw{white-space:nowrap;}
+  .hero-meta{
+    margin-top:clamp(28px,4vw,52px);
+    display:flex;align-items:center;gap:12px;
+    font-size:12.5px;letter-spacing:.14em;color:var(--muted);
+  }
+  .hero-meta::before{content:"";width:34px;height:1px;background:var(--accent);}
+  @keyframes rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+
+  .hero-media{position:relative;overflow:hidden;background:#0C100E;}
+  .hero-media::after{
+    content:"";position:absolute;left:0;right:0;bottom:0;height:42%;
+    background:linear-gradient(to top,rgba(7,11,9,.62) 0%,rgba(7,11,9,.22) 46%,rgba(7,11,9,0) 100%);
+    pointer-events:none;
+  }
+  .hero-media img{
+    width:100%;height:100%;object-fit:cover;object-position:52% 46%;
+    filter:saturate(.86) contrast(1.04) brightness(.94);
+    animation:settle 1.6s cubic-bezier(.16,.84,.32,1) both;
+  }
+  @keyframes settle{from{transform:scale(1.06);}to{transform:scale(1);}}
+  .hero-caption{
+    position:absolute;left:22px;bottom:26px;z-index:2;
+    color:#EDEBE3;font-size:12.5px;line-height:1.8;letter-spacing:.06em;
+    text-shadow:0 1px 12px rgba(0,0,0,.6);
+  }
+  .hero-caption b{display:block;font-family:var(--serif);font-weight:600;letter-spacing:.1em;}
+
+  /* ===== 主张 ===== */
+  .idea{
+    display:grid;grid-template-columns:180px minmax(0,1fr);
+    gap:clamp(20px,3vw,48px);
+    padding:clamp(56px,8vw,120px) var(--pad);
+    border-bottom:1px solid var(--line);
+  }
+  .label{
+    font-size:12.5px;letter-spacing:.2em;color:var(--muted);
+    padding-top:8px;align-self:start;position:sticky;top:86px;
+  }
+  .label::before{
+    content:"";display:block;width:26px;height:2px;background:var(--accent);margin-bottom:14px;
+  }
+  .idea-text{
+    display:grid;grid-template-columns:minmax(0,54fr) minmax(0,46fr);
+    gap:clamp(24px,4vw,64px);align-items:start;
+  }
+  .idea-text .big{
+    grid-column:1;
+    font-family:var(--serif);font-weight:600;font-size:clamp(24px,3.4vw,40px);
+    line-height:1.55;letter-spacing:.01em;
+  }
+  .idea-text .big + .big{margin-top:6px;}
+  .idea-text .plain{
+    grid-column:2;grid-row:1 / span 2;
+    max-width:26em;margin-top:6px;color:var(--ink-soft);font-size:15.5px;line-height:2;
+    padding-left:clamp(0px,2vw,28px);border-left:1px solid var(--line);
+  }
+
+  /* ===== 五个视角 ===== */
+  .angles{padding:clamp(56px,8vw,110px) var(--pad);border-bottom:1px solid var(--line);}
+  .angles h2{
+    font-family:var(--serif);font-weight:600;font-size:clamp(24px,3vw,34px);letter-spacing:.02em;
+  }
+  .angles h2 span{
+    font-family:var(--sans);font-weight:300;font-size:14px;color:var(--muted);
+    margin-left:14px;letter-spacing:.02em;
+  }
+  .axis{
+    position:relative;margin-top:clamp(36px,5vw,64px);
+    display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(12px,2vw,28px);
+  }
+  .axis::before{
+    content:"";position:absolute;left:0;right:0;top:7px;height:1px;background:var(--line);
+  }
+  .axis-item{position:relative;padding-top:26px;min-width:0;}
+  .axis-item::before{
+    content:"";position:absolute;top:0;left:0;width:9px;height:9px;border-radius:50%;
+    background:var(--paper);border:1.5px solid var(--accent);
+  }
+  .axis-item:first-child::before{background:var(--accent);}
+  .axis-item h3{
+    font-family:var(--serif);font-weight:600;font-size:clamp(17px,1.9vw,22px);
+    line-height:1.3;letter-spacing:.04em;
+  }
+  .axis-item p{margin-top:10px;font-size:13.5px;line-height:1.85;color:var(--muted);}
+
+  /* ===== 档案 ===== */
+  .archive{padding:clamp(56px,8vw,110px) var(--pad) clamp(40px,6vw,80px);border-bottom:1px solid var(--line);}
+  .archive h2{
+    font-family:var(--serif);font-weight:600;font-size:clamp(24px,3vw,34px);letter-spacing:.02em;
+  }
+  .archive h2 span{
+    font-family:var(--sans);font-weight:300;font-size:14px;color:var(--muted);
+    margin-left:14px;letter-spacing:.02em;
+  }
+
+  .entry{
+    display:grid;gap:clamp(22px,4vw,64px);align-items:center;
+    margin-top:clamp(36px,5vw,72px);
+  }
+  .entry.a{grid-template-columns:minmax(0,52fr) minmax(0,48fr);}
+  .entry.b{grid-template-columns:minmax(0,48fr) minmax(0,52fr);}
+  .entry-media{overflow:hidden;background:var(--paper-deep);}
+  .entry-media img{
+    width:100%;height:clamp(300px,44vw,560px);object-fit:cover;
+    transition:transform 1.2s cubic-bezier(.16,.84,.32,1),filter .6s;
+    filter:saturate(.9);
+  }
+  .entry-media:hover img{transform:scale(1.03);filter:saturate(1);}
+  .entry-media.pv img{object-position:50% 78%;}
+  .entry-body{max-width:34em;}
+  .entry-head{display:flex;align-items:baseline;gap:14px;color:var(--muted);font-size:12.5px;letter-spacing:.14em;}
+  .entry-head .no{font-family:var(--serif);font-weight:600;font-size:15px;color:var(--accent);letter-spacing:.06em;}
+  .entry-tag{border:1px solid var(--line);padding:2px 9px;letter-spacing:.1em;}
+  .entry h3{
+    margin-top:14px;font-family:var(--serif);font-weight:600;
+    font-size:clamp(22px,2.6vw,31px);line-height:1.45;letter-spacing:.01em;
+  }
+  .entry p{margin-top:16px;color:var(--ink-soft);font-size:15px;line-height:2;}
+  .entry-foot{
+    margin-top:22px;display:flex;justify-content:space-between;align-items:center;gap:16px;
+    padding-top:14px;border-top:1px solid var(--line);
+    font-size:12.5px;letter-spacing:.08em;color:var(--muted);
+  }
+  .entry-foot .more{border-bottom:1px solid transparent;transition:border-color .25s;}
+  .entry-foot .more:hover{border-bottom-color:var(--accent);}
+
+  .pipeline{margin-top:clamp(40px,6vw,80px);padding-top:clamp(28px,4vw,48px);border-top:1px solid var(--line);}
+  .pipeline h3{font-size:13px;letter-spacing:.2em;color:var(--muted);font-weight:500;}
+  .pipeline ul{
+    list-style:none;padding:0;margin:20px 0 0;
+    display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,2.4vw,32px);
+  }
+  .pipeline li{
+    padding-top:16px;border-top:2px solid var(--ink);
+    font-size:14.5px;line-height:1.9;color:var(--ink-soft);
+  }
+  .pipeline li b{display:block;font-family:var(--serif);font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px;}
+
+  /* ===== 关注 ===== */
+  .follow{
+    display:grid;grid-template-columns:minmax(0,1fr) auto;gap:clamp(28px,5vw,72px);
+    align-items:center;padding:clamp(56px,8vw,110px) var(--pad);
+    background:var(--ink);color:var(--paper);
+  }
+  .follow-copy h2{
+    font-family:var(--serif);font-weight:600;font-size:clamp(26px,3.6vw,44px);
+    line-height:1.4;letter-spacing:.02em;
+  }
+  .follow-copy p{margin-top:18px;max-width:30em;color:#B9BDB2;font-size:15px;line-height:1.95;}
+  .search-box{
+    margin-top:clamp(24px,3.4vw,40px);
+    display:inline-flex;align-items:center;gap:14px;
+    border:1px solid #4A5450;padding:12px 20px;
+    font-family:var(--serif);font-size:17px;letter-spacing:.08em;
+  }
+  .search-box small{font-family:var(--sans);font-size:12px;letter-spacing:.14em;color:#8E948B;}
+  .qr{
+    display:flex;flex-direction:column;align-items:center;
+    width:clamp(156px,20vw,208px);
+  }
+  .qr-frame{
+    width:100%;aspect-ratio:1/1;padding:10px;background:#fff;
+    border:1px solid #4A5450;box-shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+  .qr-frame img{display:block;width:100%;height:100%;object-fit:contain;}
+
+  /* ===== 页脚 ===== */
+  footer{
+    background:var(--ink);color:#8E948B;border-top:1px solid #2C332F;
+    padding:26px var(--pad) 34px;
+    display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+    font-size:12px;letter-spacing:.06em;
+  }
+  footer .fine{max-width:46em;line-height:1.9;}
+
+  /* ===== 响应式 ===== */
+  @media (max-width:620px){
+    .top{flex-wrap:wrap;row-gap:7px;padding:10px 18px;}
+    .top nav{
+      width:100%;justify-content:space-between;font-size:12px;
+      border-top:1px solid var(--line);padding-top:7px;
+    }
+    .seal{width:22px;height:22px;font-size:13px;}
+    .brand-name{font-size:15px;}
+    .hero-sub{font-size:14px;}
+  }
+  @media (max-width:900px){
+    .hero{grid-template-columns:1fr;min-height:0;}
+    .hero-copy{order:2;padding:36px var(--pad) 44px;}
+    .hero-media{order:1;height:56vh;min-height:300px;}
+    .idea{grid-template-columns:1fr;gap:18px;}
+    .idea-text{grid-template-columns:1fr;gap:24px;}
+    .idea-text .plain{
+      grid-column:1;grid-row:auto;max-width:34em;
+      padding-left:0;border-left:0;margin-top:0;
+    }
+    .axis{grid-template-columns:1fr;gap:0;}
+    .axis::before{display:none;}
+    .axis-item{padding:18px 0 0;border-top:1px solid var(--line);}
+    .axis-item::before{top:-4.5px;left:0;}
+    .entry.a,.entry.b{grid-template-columns:1fr;}
+    .entry-media img{height:clamp(240px,62vw,420px);}
+    .pipeline ul{grid-template-columns:1fr;}
+    .follow{grid-template-columns:1fr;justify-items:start;}
+    .qr{width:170px;margin-top:28px;}
+    footer{flex-direction:column;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body id="top">
+
+<header class="top">
+  <a class="brand" href="#top" aria-label="回到顶部">
+    <span class="seal">侧</span>
+    <span class="brand-name">远方侧写</span>
+  </a>
+  <nav>
+    <a href="#idea">主张</a>
+    <a href="#angles">五个视角</a>
+    <a href="#archive">侧写档案</a>
+    <a href="#follow">关注</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ===== 首屏 ===== -->
+  <section class="hero">
+    <div class="hero-copy">
+      <h1>远方<br>侧写</h1>
+      <p class="hero-lead">人人都拍正面，<br>我们绕到背面去。</p>
+      <p class="hero-sub">一座教堂、一片花田、一条老街——被拍过一万次的东西，还有<span class="nw">另一半</span>没人看见。这里只写那一半。</p>
+      <p class="hero-meta">人文风物 · 图文长贴 · 每周更新</p>
+    </div>
+    <div class="hero-media">
+      <img src="hero-montmartre-web.jpg" alt="从两栋老楼之间的窄巷看出去，圣心堂的圆顶露在缝隙里，巴黎蒙马特">
+      <p class="hero-caption"><b>蒙马特 · 巴黎</b>从这个缝里看圣心堂</p>
+    </div>
+  </section>
+
+  <!-- ===== 主张 ===== -->
+  <section class="idea" id="idea">
+    <div class="label">主张</div>
+    <div class="idea-text">
+      <p class="big">不写攻略，也不推荐打卡点。</p>
+      <p class="big">只做一件事：<br>把镜头从正面挪开。</p>
+      <p class="plain">移到背面、侧面、门里面、围墙外，移到本地人真正生活的那一侧。风景的另一面，往往才是它本来的样子——脚手架、后门、堆货的角落、晒黑的手臂，比修好的立面更诚实。</p>
+    </div>
+  </section>
+
+  <!-- ===== 五个视角 ===== -->
+  <section class="angles" id="angles">
+    <h2>五个视角<span>同一处风景，换五个位置看</span></h2>
+    <div class="axis">
+      <div class="axis-item">
+        <h3>背面</h3>
+        <p>宣传照永远不拍的那一面：脚手架、后门、堆货的墙角。</p>
+      </div>
+      <div class="axis-item">
+        <h3>侧面</h3>
+        <p>离开中轴线，从旁边看过去，比例和关系才露出来。</p>
+      </div>
+      <div class="axis-item">
+        <h3>内部</h3>
+        <p>走进去。门里的四十平米，比门外的立面更诚实。</p>
+      </div>
+      <div class="axis-item">
+        <h3>细节</h3>
+        <p>一块褪色的招牌、一道磨掉的漆，比全景更能说明这是哪儿。</p>
+      </div>
+      <div class="axis-item">
+        <h3>围墙之外</h3>
+        <p>景区围墙外面那条街，才是这个地方的日常。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 侧写档案 ===== -->
+  <section class="archive" id="archive">
+    <h2>侧写档案<span>已发布的几篇，从背面开始</span></h2>
+
+    <article class="entry a">
+      <div class="entry-media pv">
+        <img src="provence-web.jpg" alt="普罗旺斯瓦伦索尔，薰衣草田中的石屋，篱笆与田间小路">
+      </div>
+      <div class="entry-body">
+        <div class="entry-head">
+          <span class="no">01</span>
+          <span class="entry-tag">背面</span>
+        </div>
+        <h3>薰衣草田的另一面</h3>
+        <p>照片里只有紫色和石屋。石屋背后是农机棚、塑料布、晒黑的手臂，和被花香盖住的柴油味。花田是给人看的，田埂才是给人活的。</p>
+        <div class="entry-foot">
+          <span>瓦伦索尔 · 普罗旺斯</span>
+          <a class="more" href="#follow">看全文</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="entry b">
+      <div class="entry-body">
+        <div class="entry-head">
+          <span class="no">02</span>
+          <span class="entry-tag">侧面</span>
+        </div>
+        <h3>明信片背后的那条街</h3>
+        <p>圣心堂在明信片正中，永远白得发亮。而它背后这条街，住的是一直住在这里的人：晾着的衣服、停歪的车、早上八点开门的杂货铺。</p>
+        <div class="entry-foot">
+          <span>蒙马特 · 巴黎</span>
+          <a class="more" href="#follow">看全文</a>
+        </div>
+      </div>
+      <div class="entry-media">
+        <img src="paris-street-web.jpg" alt="巴黎老城区的一条坡道街，两侧是住宅楼，街上停着车、有人行走">
+      </div>
+    </article>
+
+    <div class="pipeline">
+      <h3>正在拍</h3>
+      <ul>
+        <li><b>围墙之外</b>一座著名园林的围墙外面，那条没有名字的巷子。</li>
+        <li><b>内部</b>走进地标楼里的公共走廊，看它工作日的四十平米。</li>
+        <li><b>细节</b>同一块招牌，四十年里被换过几次漆。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== 关注 ===== -->
+  <section class="follow" id="follow">
+    <div class="follow-copy">
+      <h2>在微信里搜「远方侧写」</h2>
+      <p>每周一篇，图文长贴。不追热点，只找一个地方的另一面。喜欢慢一点看世界的人，多半会喜欢这里。</p>
+      <div class="search-box">
+        <small>微信搜索</small>
+        远方侧写
+      </div>
+    </div>
+    <div class="qr">
+      <div class="qr-frame">
+        <img src="qrcode.jpg" alt="远方侧写公众号二维码，微信扫码关注">
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div>© 2026 远方侧写</div>
+  <div class="fine">配图为示意占位：Unsplash / Pexels 可商用素材，正式发布前请替换为自有实拍。</div>
+</footer>
+
+</body>
+</html>
