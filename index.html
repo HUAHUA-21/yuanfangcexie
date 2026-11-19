@@ -21,13 +21,14 @@
   }
 
   *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;touch-action:manipulation;}
+  html{scroll-behavior:smooth;touch-action:manipulation;overflow-x:hidden;overscroll-behavior-x:none;}
   body{
     margin:0;background:var(--paper);color:var(--ink);
     font-family:var(--sans);font-weight:300;font-size:16.5px;line-height:1.85;
     -webkit-font-smoothing:antialiased;
     overflow-x:hidden;
     touch-action:manipulation;
+    overscroll-behavior-x:none;
   }
   img{display:block;max-width:100%;}
   a{color:inherit;text-decoration:none;}
@@ -729,7 +730,9 @@
     var sec = document.getElementById("try");
     if (!sec) return;
     var w = sec.clientWidth, h = sec.clientHeight;
-    var padX = 70, padTop = 150, padBottom = 50;
+    /* 窄屏不加横向外扩，避免把页面撑出横向滚动、露出页面外的白/黑底 */
+    var padX = sec.clientWidth < 760 ? 0 : 70;
+    var padTop = 150, padBottom = 50;
     canvas.style.left = -padX + "px";
     canvas.style.top = -padTop + "px";
     canvas.style.width = (w + padX * 2) + "px";
