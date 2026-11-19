@@ -21,12 +21,13 @@
   }
 
   *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
+  html{scroll-behavior:smooth;touch-action:manipulation;}
   body{
     margin:0;background:var(--paper);color:var(--ink);
     font-family:var(--sans);font-weight:300;font-size:16.5px;line-height:1.85;
     -webkit-font-smoothing:antialiased;
     overflow-x:hidden;
+    touch-action:manipulation;
   }
   img{display:block;max-width:100%;}
   a{color:inherit;text-decoration:none;}
@@ -288,6 +289,8 @@
     box-shadow:7px 7px 0 rgba(18,25,23,.20);
     transition:transform .12s ease,box-shadow .12s ease,background .2s;
     -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+    -webkit-user-select:none;user-select:none;
   }
   .flip b{font-weight:600;font-size:clamp(22px,2.7vw,32px);letter-spacing:.16em;line-height:1;}
   .flip small{font-family:var(--sans);font-weight:300;font-size:12px;letter-spacing:.16em;opacity:.72;}
@@ -583,6 +586,23 @@
   var tagEl = document.getElementById("noteTag");
   var textEl = document.getElementById("noteText");
 
+  /* 手机马达：能震的震一下，震不了（iPhone 网页）就安静跳过 */
+  function buzz(pattern) {
+    try {
+      if (navigator.vibrate) navigator.vibrate(pattern);
+    } catch (e) {}
+  }
+
+  /* 双击放大：整页挡住；按钮本身靠 CSS 的 touch-action 关掉 */
+  var lastTapEnd = 0;
+  document.addEventListener("touchend", function (e) {
+    var now = Date.now();
+    var t = e.target;
+    var onBtn = t && t.closest && t.closest("#flipBtn");
+    if (now - lastTapEnd < 300 && !onBtn) e.preventDefault();
+    lastTapEnd = now;
+  }, { passive: false });
+
   var NOTES = [
     ["背面", "圣心堂的背面没有台阶。只有一排晾着的衣服，和一只不走的猫。"],
     ["背面", "花田是给人看的，田埂才是给人走的。"],
@@ -722,6 +742,7 @@
   function burst() {
     if (!cctx) return;
     fitCanvas();
+    buzz([22, 55, 34]);
     var box = canvas.getBoundingClientRect();
     var b = btn.getBoundingClientRect();
     var ox = b.left + b.width / 2 - box.left;
@@ -789,6 +810,7 @@
   }
   btn.addEventListener("click", function () {
     count += 1;
+    buzz(12);
     try { window.localStorage.setItem(KEY, String(count)); } catch (e) {}
     render();
     numEl.classList.remove("tick");
