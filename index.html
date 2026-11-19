@@ -344,6 +344,14 @@
     to{opacity:1;transform:none;}
   }
 
+  /* 彩带 */
+  .confetti{
+    position:absolute;inset:0;pointer-events:none;
+    display:block;width:100%;height:100%;z-index:3;
+  }
+  .invite-panel{position:relative;z-index:1;}
+  .invite{position:relative;}
+
   /* ===== 页脚 ===== */
   footer{
     background:var(--ink);color:#8E948B;border-top:1px solid #2C332F;
@@ -515,6 +523,7 @@
 
   <!-- ===== 互动 ===== -->
   <section class="invite" id="try">
+    <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
     <div class="invite-grid">
       <div class="invite-copy">
         <div class="invite-kicker">互动 · 不用理由</div>
@@ -590,7 +599,6 @@
   var KEY = "yfcexie_heart_v1";
   var count = 0;
   try { count = parseInt(window.localStorage.getItem(KEY) || "0", 10) || 0; } catch (e) {}
-
   function render() { numEl.textContent = String(count); }
   render();
   if (count > 0) {
@@ -599,6 +607,96 @@
   }
 
   var last = -1;
+
+  /* 彩带炮：每满 10 次，从按钮的位置斜着喷一把 */
+  var canvas = document.getElementById("confetti");
+  var cctx = canvas ? canvas.getContext("2d") : null;
+  var parts = [], raf = 0, dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var COLORS = ["#8C2F22", "#121917", "#B5813D", "#EFEAD9", "#C4553F"];
+
+  function fitCanvas() {
+    if (!canvas) return;
+    var sec = document.getElementById("try");
+    if (!sec) return;
+    var w = sec.clientWidth, h = sec.clientHeight;
+    var padX = 70, padTop = 150, padBottom = 50;
+    canvas.style.left = -padX + "px";
+    canvas.style.top = -padTop + "px";
+    canvas.style.width = (w + padX * 2) + "px";
+    canvas.style.height = (h + padTop + padBottom) + "px";
+    canvas.width = Math.round((w + padX * 2) * dpr);
+    canvas.height = Math.round((h + padTop + padBottom) * dpr);
+    cctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function burst() {
+    if (!cctx) return;
+    fitCanvas();
+    var box = canvas.getBoundingClientRect();
+    var b = btn.getBoundingClientRect();
+    var ox = b.left + b.width / 2 - box.left;
+    var oy = b.top + b.height * 0.2 - box.top;
+
+    for (var i = 0; i < 48; i++) {
+      var ang = (-Math.PI / 2) + (Math.random() - 0.5) * 1.7;
+      var speed = 6 + Math.random() * 7;
+      parts.push({
+        x: ox + (Math.random() - 0.5) * 26,
+        y: oy + (Math.random() - 0.5) * 10,
+        vx: Math.cos(ang) * speed,
+        vy: Math.sin(ang) * speed,
+        w: 4 + Math.random() * 4,
+        h: 8 + Math.random() * 8,
+        rot: Math.random() * Math.PI,
+        spin: (Math.random() - 0.5) * 0.35,
+        life: 0,
+        ttl: 1.5 + Math.random() * 0.7,
+        color: COLORS[(Math.random() * COLORS.length) | 0]
+      });
+    }
+    if (!raf) raf = window.requestAnimationFrame(step);
+  }
+
+  function step(now) {
+    var dt = 0.016;
+    cctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (var i = parts.length - 1; i >= 0; i--) {
+      var p = parts[i];
+      p.life += dt;
+      p.vy += 0.42;
+      p.vx *= 0.985;
+      p.vy *= 0.985;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.spin;
+
+      var k = p.life / p.ttl;
+      if (k > 1 || p.y > canvas.height / dpr + 30) { parts.splice(i, 1); continue; }
+
+      cctx.save();
+      cctx.globalAlpha = k > 0.65 ? Math.max(0, 1 - (k - 0.65) / 0.35) : 1;
+      cctx.translate(p.x, p.y);
+      cctx.rotate(p.rot);
+      cctx.fillStyle = p.color;
+      cctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      cctx.restore();
+    }
+
+    if (parts.length) {
+      raf = window.requestAnimationFrame(step);
+    } else {
+      cctx.clearRect(0, 0, canvas.width, canvas.height);
+      raf = 0;
+    }
+  }
+
+  if (canvas) {
+    fitCanvas();
+    window.addEventListener("resize", function () {
+      if (raf) return;
+      fitCanvas();
+    });
+  }
   btn.addEventListener("click", function () {
     count += 1;
     try { window.localStorage.setItem(KEY, String(count)); } catch (e) {}
@@ -627,6 +725,8 @@
     window.setTimeout(function () {
       if (plus.parentNode) plus.parentNode.removeChild(plus);
     }, 700);
+
+    if (count % 10 === 0) burst();
   });
 })();
 </script>
