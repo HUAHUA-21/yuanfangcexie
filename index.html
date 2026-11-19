@@ -256,7 +256,15 @@
     border-bottom:1px solid var(--line);
     background:var(--paper-deep);
   }
-  .invite-head{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;}
+  .invite-grid{
+    display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);
+    gap:clamp(30px,5vw,76px);align-items:start;
+  }
+  .invite-panel{
+    background:var(--paper);border:1px solid var(--line);
+    padding:clamp(20px,2.8vw,32px);
+    display:flex;flex-direction:column;gap:clamp(16px,2vw,24px);
+  }
   .invite-kicker{
     font-size:12.5px;letter-spacing:.2em;color:var(--muted);
     display:flex;align-items:center;gap:10px;
@@ -269,15 +277,11 @@
   }
   .invite-sub{margin-top:12px;max-width:34em;color:var(--ink-soft);font-size:15px;line-height:1.95;}
 
-  .invite-stage{
-    margin-top:clamp(28px,4vw,44px);
-    display:grid;grid-template-columns:auto minmax(0,1fr);
-    gap:clamp(24px,4vw,56px);align-items:center;
-  }
   .flip{
     position:relative;
-    display:inline-flex;flex-direction:column;align-items:center;gap:6px;
-    padding:clamp(20px,2.6vw,30px) clamp(30px,4.4vw,56px);
+    width:100%;
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    padding:clamp(20px,2.6vw,28px) clamp(20px,3vw,40px);
     background:var(--accent);color:var(--paper);
     border:0;cursor:pointer;
     font-family:var(--serif);
@@ -304,8 +308,8 @@
     to{opacity:0;transform:translateY(-26px);}
   }
 
-  .heart{display:flex;flex-direction:column;gap:10px;min-width:0;justify-self:end;text-align:right;}
-  .heart-top{display:flex;align-items:center;gap:14px;justify-content:flex-end;}
+  .heart{display:flex;align-items:center;justify-content:space-between;gap:14px;min-width:0;}
+  .heart-top{display:flex;align-items:center;gap:12px;justify-content:flex-start;}
   .heart-seal{
     display:grid;place-items:center;width:34px;height:34px;flex-shrink:0;
     background:var(--accent);color:var(--paper);
@@ -319,13 +323,12 @@
   }
   .heart-num.tick{animation:tick .35s ease;}
   @keyframes tick{50%{transform:translateY(-3px) scale(1.06);}}
-  .heart-label{font-size:13px;letter-spacing:.16em;color:var(--ink-soft);}
+  .heart-label{font-size:13px;letter-spacing:.16em;color:var(--ink-soft);text-align:right;}
   .heart-label span{display:block;margin-top:4px;font-size:11.5px;letter-spacing:.1em;color:var(--muted);}
 
   .note{
-    margin-top:clamp(26px,3.6vw,40px);
-    padding:18px 0 0 20px;border-left:2px solid var(--accent);
-    max-width:40em;
+    margin:0;padding:16px 0 0 18px;border-left:2px solid var(--accent);
+    min-width:0;
   }
   .note-tag{
     display:inline-block;border:1px solid var(--line);padding:1px 8px;
@@ -378,9 +381,8 @@
     .entry.a,.entry.b{grid-template-columns:1fr;}
     .entry-media img{height:clamp(240px,62vw,420px);}
     .pipeline ul{grid-template-columns:1fr;}
-    .invite-stage{grid-template-columns:1fr;gap:26px;}
-    .heart{justify-self:start;text-align:left;}
-    .heart-top{gap:10px;justify-content:flex-start;}
+    .invite-grid{grid-template-columns:1fr;gap:26px;}
+    .invite-panel{padding:20px;}
     .follow{grid-template-columns:1fr;justify-items:start;}
     .qr{width:170px;margin-top:28px;}
     footer{flex-direction:column;}
@@ -513,29 +515,29 @@
 
   <!-- ===== 互动 ===== -->
   <section class="invite" id="try">
-    <div class="invite-head">
-      <div class="invite-kicker">互动 · 不用理由</div>
-    </div>
-    <h2>点一下，就当你也绕到了背面。</h2>
-    <p class="invite-sub">每点一次，翻出一句背面笔记。它不上排行榜，只记在这台设备上——反正点这个动作，本来也不图什么。</p>
-
-    <div class="invite-stage">
-      <button class="flip" id="flipBtn" type="button" aria-describedby="noteText">
-        <b>绕到背面</b>
-        <small>点我 · 试一下</small>
-      </button>
-      <div class="heart">
-        <div class="heart-top">
-          <span class="heart-seal" aria-hidden="true">心</span>
-          <span class="heart-num" id="heartNum">0</span>
-        </div>
-        <p class="heart-label">心动值<span id="heartScope">本机累计 · 点一下加一</span></p>
+    <div class="invite-grid">
+      <div class="invite-copy">
+        <div class="invite-kicker">互动 · 不用理由</div>
+        <h2>点一下，就当你也绕到了背面。</h2>
+        <p class="invite-sub">每点一次，翻出一句背面笔记。它不上排行榜，只记在这台设备上——反正点这个动作，本来也不图什么。</p>
       </div>
-    </div>
-
-    <div class="note" id="noteBox">
-      <span class="note-tag" id="noteTag">背面</span>
-      <p class="note-text" id="noteText" aria-live="polite">还没点。第一下总会有点犹豫，这是正常的。</p>
+      <div class="invite-panel">
+        <button class="flip" id="flipBtn" type="button" aria-describedby="noteText">
+          <b>绕到背面</b>
+          <small>点我 · 试一下</small>
+        </button>
+        <div class="heart">
+          <div class="heart-top">
+            <span class="heart-seal" aria-hidden="true">心</span>
+            <span class="heart-num" id="heartNum">0</span>
+          </div>
+          <p class="heart-label">心动值<span>本机累计 · 点一下加一</span></p>
+        </div>
+        <div class="note" id="noteBox">
+          <span class="note-tag" id="noteTag">背面</span>
+          <p class="note-text" id="noteText" aria-live="polite">还没点。第一下总会有点犹豫，这是正常的。</p>
+        </div>
+      </div>
     </div>
   </section>
 
